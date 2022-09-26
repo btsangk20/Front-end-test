@@ -1,11 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom' 
+import React from "react";
+import ReactDOM from "react-dom";
+import Home from "./pages/Home/Home.js";
 
 function App() {
     return (
-        <h1>Hello world</h1>
+        <div className="div">
+            <Home />
+        </div>
     )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, document.getElementById("root"))
 

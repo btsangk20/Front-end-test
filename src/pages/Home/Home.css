@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+
+body{
+    background-color:#f5f5f5;
+    color: #f5f5f5;
+    height: 100vh;
+    font-family: "Roboto", sans-serif;
+}
+
+#root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.calculator_container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    background-color: transparent;
+    background-size:cover;
+}
+
+.calculator_iphone{
+    background-color:#000;
+    border-radius:20px;
+    width: 500px;
+    height: 680px;
+    padding:5px;
+    box-shadow: -10px -10px 15px rgba(255,255,255,0.5),
+    10px 10px 15px rgba(0,0,0,0.5);
+}
+
+.calculator_input {
+    background-color: #000;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: flex-end;
+    align-items:center;
+    margin: 0 15px 0 0;
+    padding: 0;
+    font-size: 120px;
+}
+
+.icon {
+    margin-top: 2px;
+    margin-left: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.calculator-icon-red {
+    background: rgb(240, 95, 95);
+    border: 10px solid rgb(240, 95, 95);
+    border-radius: 50%;
+}
+
+.calculator-icon-yellow {
+    background: rgb(233, 233, 109);
+    border: 10px solid rgb(233, 233, 109);
+    border-radius: 50%;
+}
+
+.calculator-icon-green {
+    background: rgb(95, 240, 95);
+    border: 10px solid rgb(95, 240, 95);
+    border-radius: 50%;
+}
+
+.calculator_button {
+    width: 100%;
+    height: 100%;
+}
+
+.calculator_button-row {
+    display: flex;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 2px;
+    gap: 2px;
+}
+
+.button-number, .button-operator, .button-special, .button-decimal { 
+    width: 125px;
+    height: 100px;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-number, .button-decimal {
+    background-color: rgb(38, 38, 38);
+}
+
+.button-number:hover, .button-decimal:hover {
+    background-color: rgb(88, 88, 88);
+    cursor: pointer;
+}
+
+.button-special {
+    background-color: rgb(120, 120, 120);
+}
+
+.button-special:hover {
+    background-color: rgb(170, 170, 170);
+    cursor: pointer;
+}
+
+.button-operator {
+    background-color: rgb(252, 141, 12);
+}
+
+.button-operator:hover {
+    background-color: rgb(255, 191, 62);
+    cursor: pointer;
+}
+
+.zero {
+    width: 253px;
+    border-radius: 0 0 0 20px;
+}
+
+.equal {
+    border-radius: 0 0 10px 0;
+}
+
