@@ -12,10 +12,10 @@ function App() {
             <nav className="navigate">
                 <ul className="navigate-list">
                     <li>
-                        <Link className="navigate-item" to="/">Home</Link>
+                        <Link className="navigate-item" to={routes.home.path}>Home</Link>
                     </li>
                     <li>
-                        <Link className="navigate-item" to="/history">History</Link>
+                        <Link className="navigate-item" to={routes.history.path}>History</Link>
                     </li>
                 </ul>
             </nav>

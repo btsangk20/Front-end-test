@@ -4,6 +4,11 @@ import Operation from "../../components/Operation/Operation";
 
 function History () {
 
+    const Clear = () => {
+        localStorage.clear();
+        window.location.reload();
+    }
+
     const Display = () => {
         const history = JSON.parse(localStorage.getItem("history"));
         return (
@@ -16,6 +21,7 @@ function History () {
                         </div>
                     )
                 })}
+                <button onClick={Clear}>Clear</button>
             </div>
         )
     }

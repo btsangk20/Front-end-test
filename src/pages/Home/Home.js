@@ -5,27 +5,22 @@ import "./Home.css";
 import Row from "../../components/Row/Row.js";
 import Button from "../../components/Button/Button.js";
 
+
+var operation = "";
+
 function Home() {
     const [preState, setPreState] = useState("");
     const [curState, setCurState] = useState("");
     const [input, setInput] = useState("0");
-    const [operator, setOperator] = useState(null);
-    const [total, setTotal] = useState(false);
 
     const inputNum = (e) => {
-        if (e.target.value === "." && input.includes(".")) return; // Prevents multiple decimals
+        operation += e.target.innerText;
 
-        if (total) { // If total is true Reset preState
-            setPreState("");
-        }
-
-        // If curState is empty set curState to the value of the button clicked, else add the value of the button clicked to curState
-        curState ? setCurState((pre) => pre + e.target.innerText) : setCurState(e.target.innerText); 
+        setCurState(curState + e.target.innerText);
 
         const ac = document.querySelector(".button-special"); // Selects the AC button
         ac.innerText = "C"; // Changes the text of the AC button to C
 
-        setTotal(false); // Sets total to false
     };
 
     useEffect(() => { // Updates the input value
@@ -37,15 +32,12 @@ function Home() {
     }, []); // Runs when the page loads
 
     const operatorType = (e) => {
-        setTotal(false); // reset total
-        setOperator(e.target.innerText); // set operator
-        if (curState === "") return; // if no current state, return
-        if (preState !== "") { // if previous state is not empty, calculate
-            equals(); // calculate
-        } else { // if previous state is empty, set current state to previous state
-            setPreState(curState); // set current state to previous state
-            setCurState(""); // set current state to empty
+        if (curState === "") {
+            return;
         }
+        operation += e.target.innerText; // Adds the operator to the operation string
+        setPreState(curState); // Sets preState to curState
+        setCurState(""); // Sets curState to an empty string
     };
 
     const history = (result) => {
@@ -55,55 +47,29 @@ function Home() {
         } else { // if history does not exist
             history = []; // set history to empty array
         }
-        history.push(preState + operator + curState + "=" + result) // push history to array
+        history.push(result);
         localStorage.setItem("history", JSON.stringify(history)) // set history to local storage
     }
 
     const equals = (e) => {
-        if (e.target.innerText === "=") { // if equals button is clicked
-            setTotal(true); // set total to true
-        }
-        let result; // create result variable
-        switch (operator) { // switch statement for operator
-        case "/": // if operator is divide previous state by current state
-            result = String(Number(preState) / Number(curState)); 
-            break;
-        case "+": // if operator is add previous state to current state
-            result = String(Number(preState) + Number(curState));
-            break;
-        case "X": // if operator is multiply previous state by current state
-            result = String(Number(preState) * Number(curState));
-            break;
-        case "-": // if operator is subtract previous state by current state
-            result = String(Number(preState) - Number(curState));
-            break;
-        default: // if no operator, return
+        if (preState === "" || curState === "") {
             return;
         }
-        history(result);
-        setInput(""); // set input to empty
-        setPreState(result); // set previous state to result
-        setCurState(""); // set current state to empty
-    };
-
-    const minusPlus = () => {
-        if (curState.charAt(0) === "-") { // if current state starts with a minus
-            setCurState(curState.substring(1)); // remove the minus
-        } 
-        else { // if current state does not start with a minus
-            setCurState("-" + curState); // add a minus to the start of the current state
+        if (e.target.innerText === "=") {
+            operation = operation.replace(/X/g, "*");
+            history(operation + "=" + eval(operation));
+            let result = eval(operation);
+            setInput("");
+            setPreState(result);
+            operation = "";
         }
-    };
-
-    const percent = () => {
-        // if previous state is not empty, set current state to the current state divided by 100 multiplied by the previous state, else set current state to the current state divided by 100
-        preState ? setCurState(String((parseFloat(curState) / 100) * preState)) : setCurState(String(parseFloat(curState) / 100)); 
     };
 
     const reset = (e) => {
         e.target.innerText = "AC"; // set text of AC button to AC
         setPreState("0"); // set previous state to 0
         setCurState(""); // set current state to empty
+        operation = ""; // set operation to empty
         setInput("0"); // set input to 0
     };
 
@@ -140,8 +106,8 @@ function Home() {
                 <div className="calculator_button">
                     <Row className={"calculator_button-row"}>
                         <Button className={"button-special"} number={"AC"} onClick={reset}></Button>
-                        <Button className={"button-special"} number={"+/-"} onClick={minusPlus}></Button>
-                        <Button className={"button-special"} number={"%"} onClick={percent}></Button>
+                        <Button className={"button-special"} number={"+/-"}></Button>
+                        <Button className={"button-special"} number={"%"}></Button>
                         <Button className={"button-operator"} number={"/"} onClick={operatorType}></Button>
                     </Row>
                     <Row className={"calculator_button-row"}>
@@ -164,7 +130,7 @@ function Home() {
                     </Row>
                     <Row className={"calculator_button-row"}>
                         <Button className={"button-number zero"} number={0} onClick={inputNum}></Button>
-                        <Button className={"button-decimal"} number={"."} onClick={inputNum}></Button>
+                        <Button className={"button-decimal"} number={"."}></Button>
                         <Button className={"button-operator equal"} number={"="} onClick={equals}></Button>
                     </Row>
                 </div>
