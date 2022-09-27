@@ -1,137 +1,161 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { NumberFormatBase } from "react-number-format";
 import "./Home.css";
-import Row from "../../components/Row/Row.js";
+import { useState, useEffect } from "react";
 import Button from "../../components/Button/Button.js";
-
-
-var operation = "";
+import Row from "../../components/Row/Row.js";
+import  { replaceCharAt, storeToHistory } from "../../utils/utility.js";
 
 function Home() {
-    const [preState, setPreState] = useState("");
-    const [curState, setCurState] = useState("");
     const [input, setInput] = useState("0");
+    const [operator, setOperator] = useState("");
+    const [expression, setExpression] = useState("");
+    const [replaceDigitIndex, setReplaceDigitIndex] = useState(-1);
 
-    const inputNum = (e) => {
-        operation += e.target.innerText;
+    useEffect(() => {
+        document.addEventListener("mousedown", (event) => {
+            if (!event.target.classList.contains("button-number")) {
+                setReplaceDigitIndex(-1);
+            }
+        })
 
-        setCurState(curState + e.target.innerText);
+        return () => {
+            document.removeEventListener("mousedown", (event) => {
+                if (!event.target.classList.contains("button-number")) {
+                    setReplaceDigitIndex(-1);
+                }
+            })
+        }
+    }, []);
 
-        const ac = document.querySelector(".button-special"); // Selects the AC button
-        ac.innerText = "C"; // Changes the text of the AC button to C
+    function handleInputNumber(e) {
+        const digit = e.target.innerText;
 
-    };
-
-    useEffect(() => { // Updates the input value
-        setInput(curState); // Sets input to curState
-    }, [curState]); // Runs when curState changes
-
-    useEffect(() => { // If preState is empty set input to curState
-        setInput("0"); // Sets input to 0
-    }, []); // Runs when the page loads
-
-    const operatorType = (e) => {
-        if (curState === "") {
+        if (replaceDigitIndex !== -1) {
+            const newInput = replaceCharAt(input, replaceDigitIndex, digit);
+            const newExpression = replaceCharAt(expression, expression.length
+                                                    - input.length
+                                                    + replaceDigitIndex, digit);
+            console.log(newInput);
+            console.log(newExpression);
+            setInput(newInput);
+            setExpression(newExpression);
+            setReplaceDigitIndex(-1);
             return;
         }
-        operation += e.target.innerText; // Adds the operator to the operation string
-        setPreState(curState); // Sets preState to curState
-        setCurState(""); // Sets curState to an empty string
-    };
 
-    const history = (result) => {
-        let history = localStorage.getItem("history"); // get history from local storage
-        if (history) {  // if history exists
-            history = JSON.parse(history); // parse history
-        } else { // if history does not exist
-            history = []; // set history to empty array
+        if (expression === "") {
+            if (digit === "0") {
+                return;
+            }
+
+            setInput(digit);
+            
+            if (operator === "-" && digit !== "0") {
+                setExpression("-" + digit);
+            } else {
+                setExpression(digit);
+            }
         }
-        history.push(result);
-        localStorage.setItem("history", JSON.stringify(history)) // set history to local storage
+       
+        if (expression !== "") {
+            if (operator !== "") {
+                setInput(digit);
+            } else {
+                setInput(input + digit);
+            }
+
+            setExpression(expression + operator + digit);
+            setOperator("");
+        }
     }
 
-    const equals = (e) => {
-        if (preState === "" || curState === "") {
+    function operatorType (event) {
+        setOperator(event.target.innerText);
+    }
+
+    function calculateExpression () {
+        const formatExpression = expression.replace(/^0+/, "").replace(/X/g, "*");
+
+        setOperator("");
+
+        if (formatExpression === "") {
+            setInput("0");
             return;
         }
-        if (e.target.innerText === "=") {
-            operation = operation.replace(/X/g, "*");
-            history(operation + "=" + eval(operation));
-            let result = eval(operation);
-            setInput("");
-            setPreState(result);
-            operation = "";
-        }
-    };
 
-    const reset = (e) => {
-        e.target.innerText = "AC"; // set text of AC button to AC
-        setPreState("0"); // set previous state to 0
-        setCurState(""); // set current state to empty
-        operation = ""; // set operation to empty
-        setInput("0"); // set input to 0
-    };
+        storeToHistory(formatExpression);
+        const result = eval(formatExpression).toString();
+        
+        setInput(result);
+        setExpression(result === "0" ? "" : result);
+    }
 
-    const changeInput = (e) => {
-        // When the user clicks the mouse into a number on screen, the number should show the edit placeholder and flick like this
-        e.target.innerText = ""; // set text of number to empty
-        e.target.contentEditable = true; // set content editable to true
-        e.target.focus(); // focus on number
-    };
+    function reset (event) {
+        event.target.innerText = "AC"; 
+        setInput("0"); 
+        setExpression("");
+        setOperator("");
+        setReplaceDigitIndex(-1);
+    }
+
+    function handleDigitClicked(index) {
+        setOperator("");
+        setReplaceDigitIndex(index);
+    }
 
     return (
-        <div className="calculator_container">
-            <div className="calculator_iphone">
-                <div className="calculator_input_display">
+        <div className="calculator-container">
+            <div className="calculator-iphone">
+                <div className="calculator-input-display">
                     <div className="icon">
                         <div className="calculator-icon-red"></div>
                         <div className="calculator-icon-yellow"></div>
                         <div className="calculator-icon-green"></div>
                     </div>
-                    <div className="calculator_input" onClick={changeInput}>
-                        {input !== "" || input === "0" ? (
-                            <NumberFormatBase
-                                value={input}
-                                displayType={"text"}
-                            />
-                        ) : (
-                            <NumberFormatBase
-                                value={preState}
-                                displayType={"text"}
-                            />
-                        )}
+                    <div className="calculator-input">
+                        <div className="calculator-input-list">
+                            {input.split("").map((item, index) => {
+                                return (
+                                    <input
+                                        key={index}
+                                        className="calculator-input-list-item"
+                                        value={item}
+                                        onClick={() => handleDigitClicked(index)}
+                                        readOnly
+                                    />
+                                )})}
+                        </div>
                     </div>
                 </div>
-                <div className="calculator_button">
-                    <Row className={"calculator_button-row"}>
+                <div className="calculator-button">
+                    <Row className={"calculator-button-row"}>
                         <Button className={"button-special"} number={"AC"} onClick={reset}></Button>
                         <Button className={"button-special"} number={"+/-"}></Button>
                         <Button className={"button-special"} number={"%"}></Button>
-                        <Button className={"button-operator"} number={"/"} onClick={operatorType}></Button>
+                        <Button className={"button-operator"} active={operator === "/"} number={"/"} onClick={operatorType}></Button>
                     </Row>
-                    <Row className={"calculator_button-row"}>
-                        <Button className={"button-number"} number={7} onClick={inputNum}></Button>
-                        <Button className={"button-number"} number={8} onClick={inputNum}></Button>
-                        <Button className={"button-number"} number={9} onClick={inputNum}></Button>
-                        <Button className={"button-operator"} number={"X"} onClick={operatorType}></Button>
+                    <Row className={"calculator-button-row"}>
+                        <Button className={"button-number"} number={7} onClick={handleInputNumber}></Button>
+                        <Button className={"button-number"} number={8} onClick={handleInputNumber}></Button>
+                        <Button className={"button-number"} number={9} onClick={handleInputNumber}></Button>
+                        <Button className={"button-operator"} active={operator === "X"} number={"X"} onClick={operatorType}></Button>
                     </Row>
-                    <Row className={"calculator_button-row"}>
-                        <Button className={"button-number"} number={4} onClick={inputNum}></Button>
-                        <Button className={"button-number"} number={5} onClick={inputNum}></Button>
-                        <Button className={"button-number"} number={6} onClick={inputNum}></Button>
-                        <Button className={"button-operator"} number={"-"} onClick={operatorType}></Button>
+                    <Row className={"calculator-button-row"}>
+                        <Button className={"button-number"} number={4} onClick={handleInputNumber}></Button>
+                        <Button className={"button-number"} number={5} onClick={handleInputNumber}></Button>
+                        <Button className={"button-number"} number={6} onClick={handleInputNumber}></Button>
+                        <Button className={"button-operator"} active={operator === "-"} number={"-"} onClick={operatorType}></Button>
                     </Row>
-                    <Row className={"calculator_button-row"}>
-                        <Button className={"button-number"} number={1} onClick={inputNum}></Button>
-                        <Button className={"button-number"} number={2} onClick={inputNum}></Button>
-                        <Button className={"button-number"} number={3} onClick={inputNum}></Button>
-                        <Button className={"button-operator"} number={"+"} onClick={operatorType}></Button>
+                    <Row className={"calculator-button-row"}>
+                        <Button className={"button-number"} number={1} onClick={handleInputNumber}></Button>
+                        <Button className={"button-number"} number={2} onClick={handleInputNumber}></Button>
+                        <Button className={"button-number"} number={3} onClick={handleInputNumber}></Button>
+                        <Button className={"button-operator"} active={operator === "+"} number={"+"} onClick={operatorType}></Button>
                     </Row>
-                    <Row className={"calculator_button-row"}>
-                        <Button className={"button-number zero"} number={0} onClick={inputNum}></Button>
+                    <Row className={"calculator-button-row"}>
+                        <Button className={"button-number zero"} number={0} onClick={handleInputNumber}></Button>
                         <Button className={"button-decimal"} number={"."}></Button>
-                        <Button className={"button-operator equal"} number={"="} onClick={equals}></Button>
+                        <Button className={"button-operator equal"} number={"="} onClick={calculateExpression}></Button>
                     </Row>
                 </div>
             </div>
@@ -140,3 +164,4 @@ function Home() {
 }
 
 export default Home;
+

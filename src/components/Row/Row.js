@@ -1,6 +1,6 @@
 import React from "react"
 
-function Row (props) {
+const Row = (props) => {
     return (
         <div className={props.className}>
             {props.children}

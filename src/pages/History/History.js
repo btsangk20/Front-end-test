@@ -5,7 +5,8 @@ import Operation from "../../components/Operation/Operation";
 function History () {
 
     const Clear = () => {
-        localStorage.clear();
+        // clear history in local storage
+        localStorage.setItem("history", JSON.stringify([]));
         window.location.reload();
     }
 
@@ -16,8 +17,8 @@ function History () {
                 <h1>List Operation</h1>
                 {history.map((item, index) => {
                     return (
-                        <div className="history__row" key={index}>
-                            <Operation className="history__operation" operator={item} />
+                        <div className="history-row" key={index}>
+                            <Operation className="history-operation" operator={item} />
                         </div>
                     )
                 })}
