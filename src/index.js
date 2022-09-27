@@ -27,6 +27,7 @@ function App() {
     )
 }
 
+
 ReactDOM.render(
     <React.StrictMode>
         <Router>
@@ -35,4 +36,6 @@ ReactDOM.render(
     </React.StrictMode>,
     document.getElementById("root")
 )
+    
+export default App;
 

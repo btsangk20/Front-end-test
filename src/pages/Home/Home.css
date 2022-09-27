@@ -57,6 +57,9 @@ body{
     height: 150px;
     display: flex;
     justify-content: flex-end;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     align-items:center;
     margin: 0 15px 0 0;
     padding: 0;
