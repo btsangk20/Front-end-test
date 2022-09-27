@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "webpack-dev-server --mode development --open --hot --port 3000",
     "build": "webpack --mode production",
     "lint": "eslint \"src/**/*.{js,jsx}\"",
@@ -33,6 +33,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.8",
     "html-webpack-plugin": "^5.5.0",
+    "jest": "^29.0.3",
     "jest-dom": "^4.0.0",
     "react-router-dom": "^6.4.1",
     "react-test-renderer": "^18.2.0",

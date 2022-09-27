@@ -1,6 +1,6 @@
 import React from "react";
-import "./Home.css";
 import { useState, useEffect } from "react";
+import "./Home.css";
 import Button from "../../components/Button/Button.js";
 import Row from "../../components/Row/Row.js";
 import  { replaceCharAt, storeToHistory } from "../../utils/utility.js";
@@ -35,8 +35,6 @@ function Home() {
             const newExpression = replaceCharAt(expression, expression.length
                                                     - input.length
                                                     + replaceDigitIndex, digit);
-            console.log(newInput);
-            console.log(newExpression);
             setInput(newInput);
             setExpression(newExpression);
             setReplaceDigitIndex(-1);
@@ -83,8 +81,8 @@ function Home() {
             return;
         }
 
-        storeToHistory(formatExpression);
         const result = eval(formatExpression).toString();
+        storeToHistory(formatExpression + "=" + result);
         
         setInput(result);
         setExpression(result === "0" ? "" : result);
