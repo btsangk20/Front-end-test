@@ -15,7 +15,22 @@ body{
     align-items: center;
 }
 
-.calculator_container {
+.navigate-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.navigate-item {
+    color: #000;
+    border: none;
+    text-decoration:none;
+}
+
+
+.calculator-container {
     width: 100%;
     height: 100%;
     display: flex;
@@ -26,7 +41,7 @@ body{
     background-size:cover;
 }
 
-.calculator_iphone{
+.calculator-iphone{
     background-color:#000;
     border-radius:20px;
     width: 500px;
@@ -36,7 +51,7 @@ body{
     10px 10px 15px rgba(0,0,0,0.5);
 }
 
-.calculator_input {
+.calculator-input {
     background-color: #000;
     width: 100%;
     height: 150px;
@@ -46,6 +61,29 @@ body{
     margin: 0 15px 0 0;
     padding: 0;
     font-size: 120px;
+}
+
+.calculator-input-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.calculator-input-list-item {
+    font-size: 120px;
+    padding: 0 2px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    caret-color: transparent;
+    color: #fff;
+    width: 65px;
+    margin: 0 2px;
+}
+
+.calculator-input-list-item:focus {
+    outline: 1px solid #fff;
 }
 
 .icon {
@@ -73,12 +111,12 @@ body{
     border-radius: 50%;
 }
 
-.calculator_button {
+.calculator-button {
     width: 100%;
     height: 100%;
 }
 
-.calculator_button-row {
+.calculator-button-row {
     display: flex;
     width: 100%;
     height: 100px;
@@ -122,6 +160,10 @@ body{
 .button-operator:hover {
     background-color: rgb(255, 191, 62);
     cursor: pointer;
+}
+
+.button-operator[data-active="true"] {
+    background-color: rgb(255, 191, 62);
 }
 
 .zero {
